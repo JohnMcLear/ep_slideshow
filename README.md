@@ -2,7 +2,10 @@
 
 Use headings to create slideshows..
 
-Heading 1 = New Slide
-Heading 2 = Title of Slide
-Heading 3 = Subtitle of Slide
-Anything less than Heading 4 = Normal slide content
+# HOW TO USE (tm)
+* Apply Heading 1 to each part of a pad you want to represent a new slide
+* Click Settings -> Slideshow
+* Navigate through your documents as a slideshow using left/right click and left/right arrows
+
+# WHY
+I made this for a presentation I'm giving on Etherpad
