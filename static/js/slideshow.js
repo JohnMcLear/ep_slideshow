@@ -4,11 +4,15 @@ if (!isMobile) {
   var postAceInit = function(hook, context){
     var pv = {
       enable: function() {
-        $('#editorcontainer, iframe, #editbar').addClass('slideshow');
+        $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
         $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('background','transparent');
+        $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").css('zoom','150%');
+        pad.changeViewOption('showLineNumbers', false);
       },
       disable: function() {
-        $('#editorcontainer, iframe, #editbar').removeClass('slideshow');
+        $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
+        $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").css('zoom','100%');
+        pad.changeViewOption('showLineNumbers', true);
       }
     }
     /* init */
