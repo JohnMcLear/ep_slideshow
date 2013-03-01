@@ -1,0 +1,14 @@
+{
+  "parts": [
+    {
+      "name": "ep_slideshow",
+      "client_hooks": {
+        "postAceInit": "ep_slideshow/static/js/slideshow:postAceInit"
+      },
+      "hooks": {
+        "eejsBlock_mySettings": "ep_slideshow/slideshow",
+        "eejsBlock_styles": "ep_slideshow/slideshow"
+      }
+    }
+  ]
+}

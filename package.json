@@ -1,0 +1,28 @@
+{
+  "name": "ep_slideshow",
+  "version": "0.0.1",
+  "keywords": [
+    "slide",
+    "show",
+    "slideshow",
+    "powerpoint"
+  ],
+  "description": "Uses headings to create real time slideshows of Etherpad documents",
+  "contributors": [
+    {
+      "name": "John McLear",
+      "email": "john@mclear.co.uk",
+      "url": "http://mclear.co.uk"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/johnmclear/ep_slideshow.git"
+  },
+  "dependencies": {
+    "ep_headings": ">=0.1.4"
+  },
+  "engines": {
+    "node": "*"
+  }
+}
