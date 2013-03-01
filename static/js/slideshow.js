@@ -8,7 +8,10 @@ var postAceInit = function(hook, context){
       $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(0); // go to 0 position (Start of presentation)
       // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
       $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().last("div").css("height","1000px");
-
+/*
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().css("font-size","16px");
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().css("line-height","20px");
+*/
       currentPosition = 0; // go to start of document
 
       pad.changeViewOption('showLineNumbers', false);
@@ -37,10 +40,13 @@ var postAceInit = function(hook, context){
     },
     disable: function() { // disable the slideshow functionality
       $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
-      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").css('zoom','100%');
       $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").not(":eq(0)").css("margin-top","0px");
       $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().last("div").css("height","20px");
       $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('overflow','auto');
+/*
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().css("font-size","12px");
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().css("line-height","14px");
+*/
       pad.changeViewOption('showLineNumbers', true);
 
       $("body").keydown(function(e) {
