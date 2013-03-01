@@ -5,12 +5,17 @@
 // headings prolly break line height issues
 
 
+
+
 var postAceInit = function(hook, context){
   var slideShow = {
     enable: function() {
       $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
       $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('background','transparent');
+      $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('overflow','hidden');
       $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").css('zoom','150%');
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").not(":eq(0)").css("padding-top","500px");
+
       pad.changeViewOption('showLineNumbers', false);
       $(".popup").hide();
 
@@ -28,6 +33,8 @@ var postAceInit = function(hook, context){
     disable: function() {
       $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
       $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").css('zoom','100%');
+      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").not(":eq(0)").css("padding-top","0px");
+      $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('overflow','auto');
       pad.changeViewOption('showLineNumbers', true);
     },
     next: function(){
