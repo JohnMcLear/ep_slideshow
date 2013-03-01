@@ -70,20 +70,22 @@ var postAceInit = function(hook, context){
     },
     next: function(){ // go to next slide
       var targetH1 = currentPosition +1;
-      currentPosition = currentPosition +1;
       var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
       if(h1.offset()){ // if the element exists
         var newY = h1.offset().top;
         $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
+        currentPosition = currentPosition +1;
       }
     },
     previous: function(){ // go to previous slide
-      var targetH1 = currentPosition -1;
-      currentPosition = currentPosition -1;
-      var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
-      if(h1.offset()){ // if the element exists
-        var newY = h1.offset().top;
-        $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
+      if(currentPosition > 0){ // dont go into negative numbers
+        var targetH1 = currentPosition -1;
+        currentPosition = currentPosition -1;
+        var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
+        if(h1.offset()){ // if the element exists
+          var newY = h1.offset().top;
+          $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
+        }
       }
     }
   }
