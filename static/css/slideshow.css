@@ -12,7 +12,7 @@ iframe.slideshow {
   position: relative;
   max-width: 650px;
   left: 350px;
-  top:200px;
+  top:200px !important;
 }
 .menu_left.slideshow {
   opacity:.1;
