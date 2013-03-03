@@ -9,10 +9,10 @@
   background-size: 100% auto;
 }
 iframe.slideshow {
-  position: relative;
-  max-width: 650px;
-  left: 350px;
-  top:200px !important;
+  position:absolute;
+  top:40% !important;
+  max-width:45%;
+  right:0px !important;
 }
 .menu_left.slideshow {
   opacity:.1;

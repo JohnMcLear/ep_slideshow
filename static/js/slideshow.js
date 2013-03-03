@@ -87,7 +87,11 @@ var postAceInit = function(hook, context){
       var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
       if(h1.offset()){ // if the element exists
         var newY = h1.offset().top;
-        $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
+        var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
+        var $outerdocHTML = $('iframe[name="ace_outer"]').contents().find("#outerdocbody").parent();
+        $outerdoc.scrollTop(newY); // works in Chrome not FF
+        $outerdoc.animate({scrollTop: newY});
+        $outerdocHTML.animate({scrollTop: newY}); // needed for FF
         currentPosition = currentPosition +1;
       }
     },
@@ -98,7 +102,11 @@ var postAceInit = function(hook, context){
         var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
         if(h1.offset()){ // if the element exists
           var newY = h1.offset().top;
-          $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
+          var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
+          var $outerdocHTML = $('iframe[name="ace_outer"]').contents().find("#outerdocbody").parent();
+          $outerdoc.scrollTop(newY); // works in Chrome not FF
+          $outerdoc.animate({scrollTop: newY});
+          $outerdocHTML.animate({scrollTop: newY}); // needed for FF
         }
       }
     },
