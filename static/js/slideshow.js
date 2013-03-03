@@ -101,6 +101,19 @@ var postAceInit = function(hook, context){
           $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(newY);
         }
       }
+    },
+    getParam: function(sname)
+    {
+      var params = location.search.substr(location.search.indexOf("?")+1);
+      var sval = "";
+      params = params.split("&");
+      // split param and value into individual pieces
+      for (var i=0; i<params.length; i++)
+      {
+        temp = params[i].split("=");
+        if ( [temp[0]] == sname ) { sval = temp[1]; }
+      }
+      return sval;
     }
   }
   /* init */
@@ -108,6 +121,10 @@ var postAceInit = function(hook, context){
     slideShow.enable();
   } else {
     slideShow.disable();
+  }
+  var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
+  if(urlContainsSlideshowTrue){
+    slideShow.enable();
   }
   /* on click */
   $('#options-slideshow').on('click', function() {
