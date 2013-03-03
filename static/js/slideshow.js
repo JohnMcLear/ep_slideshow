@@ -4,7 +4,7 @@ var postAceInit = function(hook, context){
     enable: function() {
       currentPosition = 0; // go to start of document
 
-      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents();
+      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
 
       $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
@@ -13,8 +13,13 @@ var postAceInit = function(hook, context){
       $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
 
       // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
-      $innerdoc.last("div").css("height","1000px");
-      $innerdoc.find("h1").parent().prev("div").css("margin-bottom","2000px");
+      $innerdoc.contents().last("div").css("height","1000px");
+
+      // create spacing above h1s so you can't see them on each slide
+      $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","2000px");
+
+      // make font bigger
+      $innerdoc.css({"font-size":"150%", "line-height":"20px"});
 
       // dont show line numbers -- TODO: If numbers aren't already visible then don't show them when we re-enable
       pad.changeViewOption('showLineNumbers', false);
@@ -44,14 +49,17 @@ var postAceInit = function(hook, context){
 
     },
     disable: function() { // disable the slideshow functionality
-      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents();
+      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
 
       $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
 
       $outerdoc.css('overflow','auto');
       $innerdoc.contents().last("div").css("height","20px");
-      $innerdoc.find("h1").parent().prev("div").css("margin-bottom","0px");
+      $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","0px");
+
+      // make font normal
+      $innerdoc.css({"font-size":"12px", "line-height":"16px"});
 
       pad.changeViewOption('showLineNumbers', true);
 
