@@ -12,3 +12,9 @@ exports.eejsBlock_styles = function (hook_name, args, cb)
 {
   args.content = args.content + '<link href="../static/plugins/ep_slideshow/static/css/slideshow.css" rel="stylesheet">';
 } 
+
+exports.eejsBlock_scripts = function (hook_name, args, cb)
+{
+  args.content = args.content + '<script src="../static/plugins/ep_slideshow/static/js/jgestures.js"></script>';
+}
+

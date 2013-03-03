@@ -26,19 +26,28 @@ var postAceInit = function(hook, context){
 
       // hide the popup dialogue
       $(".popup").hide();
+ 
+      // handle swipe events
+      $("body").bind('swipeone', function(e, d){
+        if(d.direction.lastX == -1){  // if it's a swipe to the left
+          slideShow.previous();
+        }else{
+          slideShow.next();
+        }
+      });
+      $("body").bind('tapone', function(e, d){
+        if(d.originalEvent.which !== 3){ // if it's not a right click..
+          slideShow.next();
+        }
+      });
 
+
+      // handle click events
       $("body").keydown(function(e) {
         if(e.keyCode == 39){ // next slide from right arrow
           slideShow.next();
         }else if(e.keyCode == 37){ // previous slide from left arrow
           slideShow.previous();
-        }
-      });
-      $("body").mousedown(function(e) {
-        if(e.target.id == "editorcontainer"){ // if we click on the main body
-          if(e.which == 1){
-            slideShow.next(); // go to next slide
-          }
         }
       });
       $("body").bind("contextmenu", function(e){
