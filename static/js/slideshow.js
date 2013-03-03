@@ -2,14 +2,24 @@ var postAceInit = function(hook, context){
   var currentPosition;
   var slideShow = {
     enable: function() {
-      $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
-      $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css({'background':'transparent', 'overflow':'hidden'});
-      $('iframe[name="ace_outer"]').contents().find("#outerdocbody").scrollTop(0); // go to 0 position (Start of presentation)
-      // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
-      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().last("div").css("height","1000px");
       currentPosition = 0; // go to start of document
 
+      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents();
+      var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
+
+      $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
+
+      // go to 0 position (Start of presentation)
+      $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
+
+      // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
+      $innerdoc.last("div").css("height","1000px");
+      $innerdoc.find("h1").parent().prev("div").css("margin-bottom","2000px");
+
+      // dont show line numbers -- TODO: If numbers aren't already visible then don't show them when we re-enable
       pad.changeViewOption('showLineNumbers', false);
+
+      // hide the popup dialogue
       $(".popup").hide();
 
       $("body").keydown(function(e) {
@@ -34,9 +44,15 @@ var postAceInit = function(hook, context){
 
     },
     disable: function() { // disable the slideshow functionality
+      var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents();
+      var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
+
       $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
-      $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().last("div").css("height","20px");
-      $('iframe[name="ace_outer"]').contents().find("#outerdocbody").css('overflow','auto');
+
+      $outerdoc.css('overflow','auto');
+      $innerdoc.contents().last("div").css("height","20px");
+      $innerdoc.find("h1").parent().prev("div").css("margin-bottom","0px");
+
       pad.changeViewOption('showLineNumbers', true);
 
       $("body").keydown(function(e) {
