@@ -1,6 +1,6 @@
 {
   "name": "ep_slideshow",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "keywords": [
     "slide",
     "show",
@@ -24,20 +24,5 @@
   },
   "engines": {
     "node": "*"
-  },
-  "_npmUser": {
-    "name": "johnyma22",
-    "email": "john@mclear.co.uk"
-  },
-  "_id": "ep_slideshow@0.1.5",
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "_engineSupported": true,
-  "_npmVersion": "1.1.24",
-  "_nodeVersion": "v0.8.14",
-  "_defaultsLoaded": true,
-  "dist": {
-    "shasum": "5c9539659008852ebc536b4d9d7864b44228672a"
-  },
-  "_from": "ep_slideshow"
+  }
 }
