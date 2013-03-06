@@ -13,6 +13,7 @@ iframe.slideshow {
   top:40% !important;
   max-width:45%;
   right:0px !important;
+  left:auto !important;
 }
 .menu_left.slideshow {
   opacity:.1;
