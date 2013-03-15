@@ -35,7 +35,8 @@ var postAceInit = function(hook, context){
           slideShow.next();
         }
       });
-      $("body").bind('tapone', function(e, d){
+      $("#editorcontainerbox").off('tapone'); // remove the initial event so it doesn't fire twice 
+      $("#editorcontainerbox").on('tapone', function(e, d){
         if(d.originalEvent.which !== 3){ // if it's not a right click..
           slideShow.next();
         }
@@ -94,6 +95,9 @@ var postAceInit = function(hook, context){
     next: function(){ // go to next slide
       var targetH1 = currentPosition +1;
       var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
+      if(h1.length == 0 && currentPosition == 0){
+        alert("You need to set some text as Heading 1 to create a new slide");
+      }
       if(h1.offset()){ // if the element exists
         var newY = h1.offset().top;
         var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
@@ -141,6 +145,7 @@ var postAceInit = function(hook, context){
   }
   var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
   if(urlContainsSlideshowTrue){
+    $('#options-slideshow').attr('checked','checked');
     slideShow.enable();
   }
   /* on click */
