@@ -1,5 +1,8 @@
 var postAceInit = function(hook, context){
   var currentPosition;
+	var changeViewOption = {
+		showLineNumbers : true
+	};
   var slideShow = {
     enable: function() {
       currentPosition = 0; // go to start of document
@@ -21,7 +24,8 @@ var postAceInit = function(hook, context){
       // make font bigger
       $innerdoc.css({"font-size":"150%", "line-height":"20px"});
 
-      // dont show line numbers -- TODO: If numbers aren't already visible then don't show them when we re-enable
+      // dont show line numbers -- remember the current setting
+      changeViewOption.showLineNumbers = typeof(clientVars.initialOptions.view) === 'undefined' ? false : (typeof(clientVars.initialOptions.view.showLineNumbers) === 'undefined' ? false : clientVars.initialOptions.view.showLineNumbers);
       pad.changeViewOption('showLineNumbers', false);
 
       // hide the popup dialogue
@@ -57,6 +61,16 @@ var postAceInit = function(hook, context){
         return false;
       });
 
+			//Mousewheel support
+			$(document).bind('mousewheel DOMMouseScroll', function(event) {
+				event.preventDefault();
+				if(event.originalEvent.wheelDelta > 0) {
+					slideShow.previous();
+				} else {
+					slideShow.next();
+				}
+			});
+
     },
     disable: function() { // disable the slideshow functionality
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
@@ -71,7 +85,7 @@ var postAceInit = function(hook, context){
       // make font normal
       $innerdoc.css({"font-size":"12px", "line-height":"16px"});
 
-      pad.changeViewOption('showLineNumbers', true);
+      pad.changeViewOption('showLineNumbers', changeViewOption.showLineNumbers);
 
       $("body").keydown(function(e) {
         if(e.keyCode == 39){ // next slide from right arrow
