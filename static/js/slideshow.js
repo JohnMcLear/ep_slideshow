@@ -61,6 +61,16 @@ var postAceInit = function(hook, context){
         return false;
       });
 
+			//Mousewheel support
+			$(document).bind('mousewheel DOMMouseScroll', function(event) {
+				event.preventDefault();
+				if(event.originalEvent.wheelDelta > 0) {
+					slideShow.previous();
+				} else {
+					slideShow.next();
+				}
+			});
+
     },
     disable: function() { // disable the slideshow functionality
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
