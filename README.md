@@ -1,6 +1,5 @@
-# ep_slideshow
-
-Use headings to create slideshows..
+Slideshows in Etherpad..  Use headings to create slideshows..
+![etherpad slideshow](http://i.imgur.com/DtXuPkl.png)
 
 # HOW TO USE (tm)
 * Apply Heading 1 to each part of a pad you want to represent a new slide
