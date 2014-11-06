@@ -1,6 +1,6 @@
 {
   "name": "ep_slideshow",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "keywords": [
     "slide",
     "show",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git://github.com/johnmclear/ep_slideshow.git"
   },
-  "dependencies": {
+  "peerDependencies": {
     "ep_headings": ">=0.1.4"
   },
   "engines": {
