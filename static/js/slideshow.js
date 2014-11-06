@@ -1,8 +1,9 @@
 var postAceInit = function(hook, context){
   var currentPosition;
-	var changeViewOption = {
-		showLineNumbers : true
-	};
+  var changeViewOption = {
+    showLineNumbers : true
+  };
+
   var slideShow = {
     enable: function() {
       currentPosition = 0; // go to start of document
@@ -61,15 +62,15 @@ var postAceInit = function(hook, context){
         return false;
       });
 
-			//Mousewheel support
-			$(document).bind('mousewheel DOMMouseScroll', function(event) {
-				event.preventDefault();
-				if(event.originalEvent.wheelDelta > 0) {
-					slideShow.previous();
-				} else {
-					slideShow.next();
-				}
-			});
+      //Mousewheel support
+      $(document).bind('mousewheel DOMMouseScroll', function(event) {
+        event.preventDefault();
+        if(event.originalEvent.wheelDelta > 0) {
+          slideShow.previous();
+        } else {
+          slideShow.next();
+        }
+      });
 
     },
     disable: function() { // disable the slideshow functionality
