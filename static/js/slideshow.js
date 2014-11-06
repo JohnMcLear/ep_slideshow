@@ -4,8 +4,13 @@ var postAceInit = function(hook, context){
     showLineNumbers : true
   };
 
+  if(!pad.plugins) pad.plugins = {};
+
   var slideShow = {
     enable: function() {
+      slideShow.isEnabled = true;
+      $("#options-pageview").attr("disabled", true);
+      if(pad.plugins.ep_page_view) pad.plugins.ep_page_view.disable();
       currentPosition = 0; // go to start of document
 
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
@@ -47,7 +52,6 @@ var postAceInit = function(hook, context){
         }
       });
 
-
       // handle click events
       $("body").keydown(function(e) {
         if(e.keyCode == 39){ // next slide from right arrow
@@ -74,6 +78,8 @@ var postAceInit = function(hook, context){
 
     },
     disable: function() { // disable the slideshow functionality
+      slideShow.isEnabled = false;
+      $("#options-pageview").attr("disabled", false);
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
 
@@ -171,5 +177,8 @@ var postAceInit = function(hook, context){
       slideShow.disable();
     }
   });
+
+  pad.plugins.ep_slideshow = slideShow;
+ 
 };
 exports.postAceInit = postAceInit;
