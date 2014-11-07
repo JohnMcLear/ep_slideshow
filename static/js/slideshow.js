@@ -44,7 +44,6 @@ var postAceInit = function(hook, context){
   $(document).bind('mousewheel DOMMouseScroll', function(event) {
     if(!slideShow.isEnabled) return true;
     event.preventDefault();
-    console.log(event.originalEvent);
     if(event.originalEvent.detail < 0 || event.originalEvent.wheelDelta >= 0) {
       slideShow.previous();
     } else {
