@@ -23,8 +23,8 @@ var postAceInit = function(hook, context){
     }
   });
 
-  // handle click events
-  $("body").keydown(function(e) {
+  // handle keydown events
+  $('body').keydown(function(e) {
     if(!slideShow.isEnabled) return true;
     if(e.keyCode == 39){ // next slide from right arrow
       slideShow.next();
@@ -33,6 +33,13 @@ var postAceInit = function(hook, context){
     }
   });
 
+  // handle click events
+  $('iframe[name="ace_outer"]').contents().find("#outerdocbody").bind("mousedown", function(e){
+    if(!slideShow.isEnabled) return true;
+    if(e.which === 1) slideShow.next();
+    if(e.which === 3) slideShow.previous();
+  });
+	
   $("body").bind("contextmenu", function(e){
     if(!slideShow.isEnabled) return true;
     e.preventDefault();
@@ -42,6 +49,7 @@ var postAceInit = function(hook, context){
 
   //Mousewheel support
   $(document).bind('mousewheel DOMMouseScroll', function(event) {
+    if(event.ctrlKey) return true;
     if(!slideShow.isEnabled) return true;
     event.preventDefault();
     if(event.originalEvent.detail < 0 || event.originalEvent.wheelDelta >= 0) {
@@ -49,6 +57,10 @@ var postAceInit = function(hook, context){
     } else {
       slideShow.next();
     }
+  });
+
+  $(document).bind('mozfullscreenchange', function(event){
+    slideShow.drawHeight();
   });
 
   var slideShow = {
@@ -84,6 +96,45 @@ var postAceInit = function(hook, context){
 
       // Go full screen
       slideShow.fullScreen();
+
+      // Draw the container height based on the content
+      slideShow.drawHeight();
+
+
+    },
+    drawHeight: function(){ // redraws page based on height of content
+      // current offset?
+      var thish1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition); // get this element
+      var nexth1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition+1); // get the target element
+      var thish1Y = thish1.offset().top;
+      if(nexth1.length > 0){
+        var nexth1Y = nexth1.offset().top;
+      }else{
+        // This bodge is because we use h1's to get the contents overall height
+        // If this is the last h1 we wont know when the next h1 exists
+        // So we can't know the contents height.
+        // A fix would be look at the overall height of the editor and use
+        // that as a reference --- TODO
+        // console.log("bodging it");
+        nexth1Y = thish1Y + 2000; // BODGE
+      }
+
+      // offset is 2000 px, take that into account
+      var contentHeight = (nexth1Y - thish1Y) - 2000;
+      // console.log("content Height", contentHeight);
+      
+      // page height
+      var pageHeight = $('iframe[name="ace_outer"]').css("height");
+      pageHeight = pageHeight.replace("px", "");
+      pageHeight = parseInt(pageHeight);
+      // console.log(pageHeight);
+
+      // content top offset
+      var offset = (pageHeight - contentHeight) / 2;
+
+      // set offset
+      // console.log("offset", offset);
+      $('iframe[name="ace_outer"]').contents().find('iframe').css("top", offset +"px");
     },
     disable: function() { // disable the slideshow functionality
       slideShow.isEnabled = false;
@@ -109,6 +160,7 @@ var postAceInit = function(hook, context){
           return false;
         }
       });
+
       $("body").mousedown(function(e) {
         if(e.target.id == "editorcontainer"){ // if we click on the main body
           if(e.which == 1){
@@ -116,9 +168,12 @@ var postAceInit = function(hook, context){
           }
         }
       });
+
       $("body").bind("contextmenu", function(e){
         return false;
       });
+
+      $('iframe[name="ace_outer"]').contents().find('iframe').css("top", "7px");
 
     },
     next: function(){ // go to next slide
@@ -135,6 +190,7 @@ var postAceInit = function(hook, context){
         $outerdoc.animate({scrollTop: newY});
         $outerdocHTML.animate({scrollTop: newY}); // needed for FF
         currentPosition = currentPosition +1;
+        slideShow.drawHeight();
       }
     },
     previous: function(){ // go to previous slide
@@ -149,6 +205,7 @@ var postAceInit = function(hook, context){
           $outerdoc.scrollTop(newY); // works in Chrome not FF
           $outerdoc.animate({scrollTop: newY});
           $outerdocHTML.animate({scrollTop: newY}); // needed for FF
+          slideShow.drawHeight();
         }
       }
     },
@@ -166,7 +223,7 @@ var postAceInit = function(hook, context){
       return sval;
     },
     fullScreen: function(){
-      var elem = document.getElementById("editorcontainerbox");
+      var elem = document.getElementById("editorcontainer");
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
       } else if (elem.msRequestFullscreen) {
@@ -199,6 +256,11 @@ var postAceInit = function(hook, context){
   });
 
   pad.plugins.ep_slideshow = slideShow;
+
+  $(window).resize(function() {
+    if(!slideShow.isEnabled) return true;
+    slideShow.drawHeight();
+  });
  
 };
 exports.postAceInit = postAceInit;

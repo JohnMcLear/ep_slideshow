@@ -4,16 +4,13 @@
   text-align: center;
   padding-top: 0px;
   top:0px;
-  background: url("http://labs.toolness.com/temp/2010-SM-firefox-title.png");
-  background-repeat: no-repeat;
-  background-size: 100% auto;
+  background: radial-gradient(#F0F0F0, #BEBEBE) repeat scroll 0% 0% transparent;
 }
 iframe.slideshow {
-  position:absolute;
-  top:40% !important;
-  max-width:45%;
-  right:0px !important;
-  left:auto !important;
+  position:relative !important;
+/*  top:30% !important;*/
+  margin:auto;
+  max-width:1024px;
 }
 .menu_left.slideshow {
   opacity:.1;
