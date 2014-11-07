@@ -6,6 +6,51 @@ var postAceInit = function(hook, context){
 
   if(!pad.plugins) pad.plugins = {};
 
+  // handle swipe events
+  $("body").bind('swipeone', function(e, d){
+    if(!slideShow.isEnabled) return false;
+    if(d.direction.lastX == -1){  // if it's a swipe to the left
+      slideShow.previous();
+    }else{
+      slideShow.next();
+    }
+  });
+
+  $("#editorcontainerbox").off('tapone'); // remove the initial event so it doesn't fire twice
+  $("#editorcontainerbox").on('tapone', function(e, d){
+    if(d.originalEvent.which !== 3){ // if it's not a right click..
+      slideShow.next();
+    }
+  });
+
+  // handle click events
+  $("body").keydown(function(e) {
+    if(!slideShow.isEnabled) return false;
+    if(e.keyCode == 39){ // next slide from right arrow
+      slideShow.next();
+    }else if(e.keyCode == 37){ // previous slide from left arrow
+      slideShow.previous();
+    }
+  });
+
+  $("body").bind("contextmenu", function(e){
+    if(!slideShow.isEnabled) return false;
+    e.preventDefault();
+    slideShow.previous(); // go to previous slide
+    return false;
+  });
+
+  //Mousewheel support
+  $(document).bind('mousewheel DOMMouseScroll', function(event) {
+    if(!slideShow.isEnabled) return false;
+    event.preventDefault();
+    if(event.originalEvent.wheelDelta > 0) {
+      slideShow.previous();
+    } else {
+      slideShow.next();
+    }
+  });
+
   var slideShow = {
     enable: function() {
       slideShow.isEnabled = true;
@@ -37,45 +82,6 @@ var postAceInit = function(hook, context){
       // hide the popup dialogue
       $(".popup").hide();
  
-      // handle swipe events
-      $("body").bind('swipeone', function(e, d){
-        if(d.direction.lastX == -1){  // if it's a swipe to the left
-          slideShow.previous();
-        }else{
-          slideShow.next();
-        }
-      });
-      $("#editorcontainerbox").off('tapone'); // remove the initial event so it doesn't fire twice 
-      $("#editorcontainerbox").on('tapone', function(e, d){
-        if(d.originalEvent.which !== 3){ // if it's not a right click..
-          slideShow.next();
-        }
-      });
-
-      // handle click events
-      $("body").keydown(function(e) {
-        if(e.keyCode == 39){ // next slide from right arrow
-          slideShow.next();
-        }else if(e.keyCode == 37){ // previous slide from left arrow
-          slideShow.previous();
-        }
-      });
-      $("body").bind("contextmenu", function(e){
-        e.preventDefault();
-        slideShow.previous(); // go to previous slide
-        return false;
-      });
-
-      //Mousewheel support
-      $(document).bind('mousewheel DOMMouseScroll', function(event) {
-        event.preventDefault();
-        if(event.originalEvent.wheelDelta > 0) {
-          slideShow.previous();
-        } else {
-          slideShow.next();
-        }
-      });
-
     },
     disable: function() { // disable the slideshow functionality
       slideShow.isEnabled = false;
