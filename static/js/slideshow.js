@@ -25,7 +25,7 @@ var postAceInit = function(hook, context){
 
   // handle click events
   $("body").keydown(function(e) {
-    if(!slideShow.isEnabled) return false;
+    if(!slideShow.isEnabled) return true;
     if(e.keyCode == 39){ // next slide from right arrow
       slideShow.next();
     }else if(e.keyCode == 37){ // previous slide from left arrow
@@ -34,7 +34,7 @@ var postAceInit = function(hook, context){
   });
 
   $("body").bind("contextmenu", function(e){
-    if(!slideShow.isEnabled) return false;
+    if(!slideShow.isEnabled) return true;
     e.preventDefault();
     slideShow.previous(); // go to previous slide
     return false;
@@ -42,7 +42,7 @@ var postAceInit = function(hook, context){
 
   //Mousewheel support
   $(document).bind('mousewheel DOMMouseScroll', function(event) {
-    if(!slideShow.isEnabled) return false;
+    if(!slideShow.isEnabled) return true;
     event.preventDefault();
     if(event.originalEvent.wheelDelta > 0) {
       slideShow.previous();
