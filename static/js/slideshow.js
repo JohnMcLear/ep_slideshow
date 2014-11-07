@@ -81,7 +81,9 @@ var postAceInit = function(hook, context){
 
       // hide the popup dialogue
       $(".popup").hide();
- 
+
+      // Go full screen
+      slideShow.fullScreen();
     },
     disable: function() { // disable the slideshow functionality
       slideShow.isEnabled = false;
@@ -162,6 +164,18 @@ var postAceInit = function(hook, context){
         if ( [temp[0]] == sname ) { sval = temp[1]; }
       }
       return sval;
+    },
+    fullScreen: function(){
+      var elem = document.getElementById("editorcontainerbox");
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
     }
   }
   /* init */
