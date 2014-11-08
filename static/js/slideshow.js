@@ -5,22 +5,11 @@ var postAceInit = function(hook, context){
   };
 
   if(!pad.plugins) pad.plugins = {};
+  // $('#options-slideshowEdit').attr("disabled", false);
 
-  // handle swipe events
-  $("body").bind('swipeone', function(e, d){
-    if(!slideShow.isEnabled) return false;
-    if(d.direction.lastX == -1){  // if it's a swipe to the left
-      slideShow.previous();
-    }else{
-      slideShow.next();
-    }
-  });
-
-  $("#editorcontainerbox").off('tapone'); // remove the initial event so it doesn't fire twice
-  $("#editorcontainerbox").on('tapone', function(e, d){
-    if(d.originalEvent.which !== 3){ // if it's not a right click..
-      slideShow.next();
-    }
+  $(window).resize(function() {
+    if(!slideShow.isEnabled) return true;
+    slideShow.drawHeight();
   });
 
   // handle keydown events
@@ -35,22 +24,81 @@ var postAceInit = function(hook, context){
 
   // handle click events
   $('iframe[name="ace_outer"]').contents().find("#outerdocbody").bind("mousedown", function(e){
-    if(!slideShow.isEnabled) return true;
+    if(!slideShow.isEnabled) return false; // if we're in slideshow view
+    if(slideShow.editMode) return false; // If we're allowing edits
+    console.log("sup outerdocbody", e);
     if(e.which === 1) slideShow.next();
     if(e.which === 3) slideShow.previous();
-  });
-	
-  $("body").bind("contextmenu", function(e){
-    if(!slideShow.isEnabled) return true;
     e.preventDefault();
-    slideShow.previous(); // go to previous slide
+  });
+
+  // handle click events
+  $("body").bind("mousedown", function(e){
+    if(!slideShow.isEnabled) return false; // if we're in slideshow view
+    if(slideShow.editMode) return false; // If we're allowing edits
+    console.log("sup body", e);
+    if(e.which === 1) slideShow.next();
+    if(e.which === 3) slideShow.previous();
+    e.preventDefault();
+    $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").blur();
+  });
+
+  // handle click events
+  $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").bind("mousedown", function(e){
+    if(!slideShow.isEnabled) return true; // if we're in slideshow view
+    if(slideShow.editMode) return; // If we're allowing edits
+    console.log("sup inner doc", e);
+    if(e.which === 1) slideShow.next();
+    if(e.which === 3) slideShow.previous();
+    e.preventDefault();
+    $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").blur();
+  });
+
+  $("body").on("contextmenu", function(e){
+    if(slideShow.editMode) return; // If we're allowing edits
+    console.log("sup context");
+    e.preventDefault();
+    return slideShow.handleRightClick(e);
+  });
+
+  $('iframe[name="ace_outer"]').contents().find("#outerdocbody").on("contextmenu", function(e){
+    if(slideShow.editMode) return; // If we're allowing edits
+    console.log("sup context 2");
+    e.preventDefault();
+    return slideShow.handleRightClick(e);
+  });
+
+  $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").on("contextmenu", function(e){
+    if(slideShow.editMode) return; // If we're allowing edits
+    console.log("sup context 3");
+    e.preventDefault();
+    // return slideShow.handleRightClick(e);
     return false;
   });
 
-  //Mousewheel support
+  // on click view
+  $('#options-slideshow').on('click', function() {
+    if($('#options-slideshow').is(':checked')) {
+      slideShow.enable();
+    } else {
+      slideShow.disable();
+    }
+  });
+
+  // on click edit while in view
+  $('#options-slideshowEdit').on('click', function() {
+    if($('#options-slideshowEdit').is(':checked')) {
+      slideShow.editMode = true;
+    } else {
+      slideShow.editMode = false;
+    }
+  });
+
+  // Mousewheel support
   $(document).bind('mousewheel DOMMouseScroll', function(event) {
     if(event.ctrlKey) return true;
     if(!slideShow.isEnabled) return true;
+    if(slideShow.editMode) return; // If we're allowing edits
     event.preventDefault();
     if(event.originalEvent.detail < 0 || event.originalEvent.wheelDelta >= 0) {
       slideShow.previous();
@@ -60,7 +108,9 @@ var postAceInit = function(hook, context){
   });
 
   $(document).bind('mozfullscreenchange', function(event){
+    console.log("event", event);
     slideShow.drawHeight();
+    $('#editorcontainer').css("top","0px");
   });
 
   var slideShow = {
@@ -99,9 +149,8 @@ var postAceInit = function(hook, context){
 
       // Draw the container height based on the content
       slideShow.drawHeight();
-
-
     },
+
     drawHeight: function(){ // redraws page based on height of content
       // current offset?
       var thish1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition); // get this element
@@ -136,7 +185,9 @@ var postAceInit = function(hook, context){
       // console.log("offset", offset);
       $('iframe[name="ace_outer"]').contents().find('iframe').css("top", offset +"px");
     },
+
     disable: function() { // disable the slideshow functionality
+      $('#editorcontainer').css("top","0px");
       slideShow.isEnabled = false;
       $("#options-pageview").attr("disabled", false);
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
@@ -174,14 +225,26 @@ var postAceInit = function(hook, context){
       });
 
       $('iframe[name="ace_outer"]').contents().find('iframe').css("top", "7px");
-
     },
+
     next: function(){ // go to next slide
       var targetH1 = currentPosition +1;
       var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
       if(h1.length == 0 && currentPosition == 0){
         alert("You need to set some text as Heading 1 to create a new slide");
       }
+
+      // Skip over blank errornous H1s
+      // This is really buggy
+      /*
+      var text = $(h1).text();
+      if(text === ""){
+        currentPosition = currentPosition +1;
+        slideShow.next();
+        return;
+      }
+      */
+
       if(h1.offset()){ // if the element exists
         var newY = h1.offset().top;
         var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
@@ -193,11 +256,16 @@ var postAceInit = function(hook, context){
         slideShow.drawHeight();
       }
     },
+
     previous: function(){ // go to previous slide
+      console.log("previous");
       if(currentPosition > 0){ // dont go into negative numbers
         var targetH1 = currentPosition -1;
         currentPosition = currentPosition -1;
         var h1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(targetH1); // get the target element
+
+        // Skip over blank errornous H1s -- TODO
+
         if(h1.offset()){ // if the element exists
           var newY = h1.offset().top;
           var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
@@ -209,6 +277,7 @@ var postAceInit = function(hook, context){
         }
       }
     },
+
     getParam: function(sname)
     {
       var params = location.search.substr(location.search.indexOf("?")+1);
@@ -222,6 +291,7 @@ var postAceInit = function(hook, context){
       }
       return sval;
     },
+
     fullScreen: function(){
       var elem = document.getElementById("editorcontainer");
       if (elem.requestFullscreen) {
@@ -233,34 +303,22 @@ var postAceInit = function(hook, context){
       } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
       }
+    },
+
+    handleRightClick: function(e){
+      if(!slideShow.isEnabled) return true;
+      e.preventDefault();
+      slideShow.previous(); // go to previous slide
+      return false;
     }
   }
-  /* init */
-  if($('#options-slideshow').is(':checked')) {
-    slideShow.enable();
-  } else {
-    slideShow.disable();
-  }
+
   var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
   if(urlContainsSlideshowTrue){
     $('#options-slideshow').attr('checked','checked');
     slideShow.enable();
   }
-  /* on click */
-  $('#options-slideshow').on('click', function() {
-    if($('#options-slideshow').is(':checked')) {
-      slideShow.enable();
-    } else {
-      slideShow.disable();
-    }
-  });
 
-  pad.plugins.ep_slideshow = slideShow;
-
-  $(window).resize(function() {
-    if(!slideShow.isEnabled) return true;
-    slideShow.drawHeight();
-  });
- 
+  pad.plugins.ep_slideshow = slideShow; 
 };
 exports.postAceInit = postAceInit;

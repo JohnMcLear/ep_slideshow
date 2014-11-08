@@ -1083,7 +1083,7 @@
 	* {Object}
 	*			{
 	*				type: e.g. 'swipemove',
-	*				.: {DOM-Event},
+	*				≈: {DOM-Event},
 	*				// default: just one entry on the delta-array - the first touchpoint
 	*				// the first touchpoint is the reference point for every gesture,
 	*				// because moving touchpoints in various directions would result in
@@ -1531,4 +1531,3 @@
 		}
 	}
 )(jQuery);
-
