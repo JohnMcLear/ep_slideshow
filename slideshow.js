@@ -15,7 +15,7 @@ exports.eejsBlock_styles = function (hook_name, args, cb)
 
 exports.eejsBlock_scripts = function (hook_name, args, cb)
 {
-  args.content = args.content + '<script src="../static/plugins/ep_slideshow/static/js/jquery.event.move.js"></script>';
-  args.content = args.content + '<script src="../static/plugins/ep_slideshow/static/js/jquery.event.swipe.js"></script>';
+//  args.content = args.content + '<script src="../static/plugins/ep_slideshow/static/js/jquery.event.move.js"></script>';
+//  args.content = args.content + '<script src="../static/plugins/ep_slideshow/static/js/jquery.event.swipe.js"></script>';
 }
 
