@@ -34,8 +34,8 @@ var postAceInit = function(hook, context){
 
   // handle click events
   $("body").bind("mousedown", function(e){
-    if(!slideShow.isEnabled) return false; // if we're in slideshow view
-    if(slideShow.editMode) return false; // If we're allowing edits
+    if(!slideShow.isEnabled) return true; // if we're in slideshow view
+    if(slideShow.editMode) return true; // If we're allowing edits
     console.log("sup body", e);
     if(e.which === 1) slideShow.next();
     if(e.which === 3) slideShow.previous();
