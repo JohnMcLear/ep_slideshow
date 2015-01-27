@@ -26,7 +26,6 @@ var postAceInit = function(hook, context){
   $('iframe[name="ace_outer"]').contents().find("#outerdocbody").bind("mousedown", function(e){
     if(!slideShow.isEnabled) return false; // if we're in slideshow view
     if(slideShow.editMode) return false; // If we're allowing edits
-    console.log("sup outerdocbody", e);
     if(e.which === 1) slideShow.next();
     if(e.which === 3) slideShow.previous();
     e.preventDefault();
@@ -36,7 +35,6 @@ var postAceInit = function(hook, context){
   $("body").bind("mousedown", function(e){
     if(!slideShow.isEnabled) return true; // if we're in slideshow view
     if(slideShow.editMode) return true; // If we're allowing edits
-    console.log("sup body", e);
     if(e.which === 1) slideShow.next();
     if(e.which === 3) slideShow.previous();
     e.preventDefault();
@@ -47,7 +45,6 @@ var postAceInit = function(hook, context){
   $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").bind("mousedown", function(e){
     if(!slideShow.isEnabled) return true; // if we're in slideshow view
     if(slideShow.editMode) return; // If we're allowing edits
-    console.log("sup inner doc", e);
     if(e.which === 1) slideShow.next();
     if(e.which === 3) slideShow.previous();
     e.preventDefault();
@@ -56,21 +53,18 @@ var postAceInit = function(hook, context){
 
   $("body").on("contextmenu", function(e){
     if(slideShow.editMode) return; // If we're allowing edits
-    console.log("sup context");
     e.preventDefault();
     return slideShow.handleRightClick(e);
   });
 
   $('iframe[name="ace_outer"]').contents().find("#outerdocbody").on("contextmenu", function(e){
     if(slideShow.editMode) return; // If we're allowing edits
-    console.log("sup context 2");
     e.preventDefault();
     return slideShow.handleRightClick(e);
   });
 
   $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").on("contextmenu", function(e){
     if(slideShow.editMode) return; // If we're allowing edits
-    console.log("sup context 3");
     e.preventDefault();
     // return slideShow.handleRightClick(e);
     return false;
@@ -108,7 +102,6 @@ var postAceInit = function(hook, context){
   });
 
   $(document).bind('mozfullscreenchange', function(event){
-    console.log("event", event);
     slideShow.drawHeight();
     $('#editorcontainer').css("top","0px");
   });
@@ -164,7 +157,6 @@ var postAceInit = function(hook, context){
         // So we can't know the contents height.
         // A fix would be look at the overall height of the editor and use
         // that as a reference --- TODO
-        // console.log("bodging it");
         nexth1Y = thish1Y + 2000; // BODGE
       }
 
@@ -258,7 +250,6 @@ var postAceInit = function(hook, context){
     },
 
     previous: function(){ // go to previous slide
-      console.log("previous");
       if(currentPosition > 0){ // dont go into negative numbers
         var targetH1 = currentPosition -1;
         currentPosition = currentPosition -1;
@@ -316,6 +307,12 @@ var postAceInit = function(hook, context){
   var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
   if(urlContainsSlideshowTrue){
     $('#options-slideshow').attr('checked','checked');
+    $('#options-slideshow').prop('checked','checked');
+    if($('#options-slideshowEdit').is(':checked')) {
+      slideShow.editMode = true;
+    } else {
+      slideShow.editMode = false;
+    }
     slideShow.enable();
   }
 
