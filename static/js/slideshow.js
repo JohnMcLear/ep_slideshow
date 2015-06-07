@@ -1,4 +1,5 @@
 var postAceInit = function(hook, context){
+  var savedTop = $('#editorcontainer').css("top");
   var currentPosition;
   var changeViewOption = {
     showLineNumbers : true
@@ -103,7 +104,7 @@ var postAceInit = function(hook, context){
 
   $(document).bind('mozfullscreenchange', function(event){
     slideShow.drawHeight();
-    $('#editorcontainer').css("top","0px");
+    $('#editorcontainer').css("top",savedTop);
   });
 
   var slideShow = {
@@ -179,7 +180,7 @@ var postAceInit = function(hook, context){
     },
 
     disable: function() { // disable the slideshow functionality
-      $('#editorcontainer').css("top","0px");
+      $('#editorcontainer').css("top",savedTop);
       slideShow.isEnabled = false;
       $("#options-pageview").attr("disabled", false);
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
