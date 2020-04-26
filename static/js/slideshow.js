@@ -116,15 +116,17 @@ var postAceInit = function(hook, context){
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
       var $innerFrame = $('iframe[name="ace_outer"]').contents().find('iframe');
-      var $outerFrame = $('iframe[name="ace_outer"]')
+      var $outerFrame = $('iframe[name="ace_outer"]');
+
+      slideShow.previousInnerCSS = $innerdoc.getStyleObject();
+      slideShow.previousInnerFrameCSS = $innerFrame.getStyleObject();
+      slideShow.previousOuterFrameCSS = $outerFrame.getStyleObject();
+
       $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
       // go to 0 position (Start of presentation)
       $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
       $outerFrame.css("height","80%");
 
-      slideShow.previousInnerCSS = $innerdoc.getStyleObject();
-      slideShow.previousInnerFrameCSS = $innerFrame.getStyleObject();
-      slideShow.previousOuterFrameCSS = $outerFrame.getStyleObject();
 
       $innerdoc.css({"background-color":"transparent"});
       $innerFrame.css({"background-color":"transparent"});
@@ -205,8 +207,6 @@ var postAceInit = function(hook, context){
 
       $innerdoc.css(slideShow.previousInnerCSS);
       $innerFrame.css(slideShow.previousInnerFrameCSS);
-
-      $outerFrame.css(slideShow.previousInnerFrameCSS);
       $outerFrame.css(slideShow.previousOuterFrameCSS);
 
       pad.changeViewOption('showLineNumbers', changeViewOption.showLineNumbers);
@@ -231,7 +231,6 @@ var postAceInit = function(hook, context){
         return false;
       });
 
-      $('iframe[name="ace_outer"]').contents().find('iframe').css("top", "7px");
     },
 
     next: function(){ // go to next slide
