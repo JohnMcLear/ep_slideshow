@@ -122,11 +122,11 @@ var postAceInit = function(hook, context){
       slideShow.previousInnerFrameCSS = $innerFrame.getStyleObject();
       slideShow.previousOuterFrameCSS = $outerFrame.getStyleObject();
 
+
       $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
       // go to 0 position (Start of presentation)
       $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
       $outerFrame.css("height","80%");
-
 
       $innerdoc.css({"background-color":"transparent"});
       $innerFrame.css({"background-color":"transparent"});
@@ -319,7 +319,7 @@ var postAceInit = function(hook, context){
   }
 
   var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
-  if(urlContainsSlideshowTrue === "broken by browsers ;("){
+  if(urlContainsSlideshowTrue){
     $('#options-slideshow').attr('checked','checked');
     $('#options-slideshow').prop('checked','checked');
     if($('#options-slideshowEdit').is(':checked')) {
