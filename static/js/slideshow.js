@@ -111,7 +111,6 @@ var postAceInit = function(hook, context){
     enable: function() {
       slideShow.isEnabled = true;
       $("#options-pageview").attr("disabled", true);
-      if(pad.plugins.ep_page_view) pad.plugins.ep_page_view.disable();
       currentPosition = 0; // go to start of document
 
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
@@ -122,8 +121,12 @@ var postAceInit = function(hook, context){
       // go to 0 position (Start of presentation)
       $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
 
+      slideShow.previousInnerCSSBackground = $innerdoc.css("background-color");
+      $innerdoc.css({"background-color":"transparent"});
+
       // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
       $innerdoc.contents().last("div").css("height","1000px");
+
 
       // create spacing above h1s so you can't see them on each slide
       $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","2000px");
@@ -136,7 +139,7 @@ var postAceInit = function(hook, context){
       pad.changeViewOption('showLineNumbers', false);
 
       // hide the popup dialogue
-      $(".popup").hide();
+      // $(".popup").hide();
 
       // Go full screen
       slideShow.fullScreen();
@@ -149,7 +152,7 @@ var postAceInit = function(hook, context){
       // current offset?
       var thish1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition); // get this element
       var nexth1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition+1); // get the target element
-      var thish1Y = thish1.offset().top;
+      if(thish1Y) var thish1Y = thish1.offset().top;
       if(nexth1.length > 0){
         var nexth1Y = nexth1.offset().top;
       }else{
@@ -164,7 +167,7 @@ var postAceInit = function(hook, context){
       // offset is 2000 px, take that into account
       var contentHeight = (nexth1Y - thish1Y) - 2000;
       // console.log("content Height", contentHeight);
-      
+
       // page height
       var pageHeight = $('iframe[name="ace_outer"]').css("height");
       pageHeight = pageHeight.replace("px", "");
@@ -190,7 +193,10 @@ var postAceInit = function(hook, context){
 
       $outerdoc.css('overflow','auto');
       $innerdoc.contents().last("div").css("height","20px");
+      $innerdoc.removeClass('slideshow');
       $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","0px");
+      
+      $innerdoc.css("background-color", slideShow.previousInnerCSSBackground);
 
       // make font normal
       $innerdoc.css({"font-size":"12px", "line-height":"16px"});
@@ -306,7 +312,7 @@ var postAceInit = function(hook, context){
   }
 
   var urlContainsSlideshowTrue = (slideShow.getParam("slideshow") == "true"); // if the url param is set
-  if(urlContainsSlideshowTrue){
+  if(urlContainsSlideshowTrue === "broken by browsers ;("){
     $('#options-slideshow').attr('checked','checked');
     $('#options-slideshow').prop('checked','checked');
     if($('#options-slideshowEdit').is(':checked')) {
@@ -317,6 +323,6 @@ var postAceInit = function(hook, context){
     slideShow.enable();
   }
 
-  pad.plugins.ep_slideshow = slideShow; 
+  pad.plugins.ep_slideshow = slideShow;
 };
 exports.postAceInit = postAceInit;

@@ -6,6 +6,10 @@
   top:0px;
   background: radial-gradient(#F0F0F0, #BEBEBE) repeat scroll 0% 0% transparent;
 }
+#innerdocbody.slideshow{
+  background: none;
+  background-color: none;
+}
 iframe.slideshow {
   position:relative !important;
   margin:auto;
