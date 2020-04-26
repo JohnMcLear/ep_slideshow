@@ -115,14 +115,19 @@ var postAceInit = function(hook, context){
 
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
-
+      var $innerFrame = $('iframe[name="ace_outer"]').contents().find('iframe');
+      var $outerFrame = $('iframe[name="ace_outer"]')
       $('#editorcontainer, iframe, .menu_left, .menu_right').addClass('slideshow');
-
       // go to 0 position (Start of presentation)
       $outerdoc.css({'background':'transparent', 'overflow':'hidden'}).scrollTop(0); // go to 0 position (Start of presentation)
+      $outerFrame.css("height","80%");
 
-      slideShow.previousInnerCSSBackground = $innerdoc.css("background-color");
+      slideShow.previousInnerCSS = $innerdoc.getStyleObject();
+      slideShow.previousInnerFrameCSS = $innerFrame.getStyleObject();
+      slideShow.previousOuterFrameCSS = $outerFrame.getStyleObject();
+
       $innerdoc.css({"background-color":"transparent"});
+      $innerFrame.css({"background-color":"transparent"});
 
       // make last line super high, this is hacky but it just means we have enough space to scrollto if its near the bottom of the document
       $innerdoc.contents().last("div").css("height","1000px");
@@ -132,7 +137,8 @@ var postAceInit = function(hook, context){
       $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","2000px");
 
       // make font bigger
-      $innerdoc.css({"font-size":"150%", "line-height":"20px"});
+      // $innerdoc.css("zoom","1.25"); // TODO make this a setting or workable
+      // The above breaks scrolling in firefox..  FML!
 
       // dont show line numbers -- remember the current setting
       changeViewOption.showLineNumbers = typeof(clientVars.initialOptions.view) === 'undefined' ? false : (typeof(clientVars.initialOptions.view.showLineNumbers) === 'undefined' ? false : clientVars.initialOptions.view.showLineNumbers);
@@ -152,9 +158,9 @@ var postAceInit = function(hook, context){
       // current offset?
       var thish1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition); // get this element
       var nexth1 = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody").contents().find("h1").eq(currentPosition+1); // get the target element
-      if(thish1Y) var thish1Y = thish1.offset().top;
+      if(thish1Y) var thish1Y = thish1.offsetTop;
       if(nexth1.length > 0){
-        var nexth1Y = nexth1.offset().top;
+        var nexth1Y = nexth1.offsetTop;
       }else{
         // This bodge is because we use h1's to get the contents overall height
         // If this is the last h1 we wont know when the next h1 exists
@@ -188,18 +194,20 @@ var postAceInit = function(hook, context){
       $("#options-pageview").attr("disabled", false);
       var $innerdoc = $('iframe[name="ace_outer"]').contents().find('iframe').contents().find("#innerdocbody");
       var $outerdoc = $('iframe[name="ace_outer"]').contents().find("#outerdocbody");
-
+      var $innerFrame = $('iframe[name="ace_outer"]').contents().find('iframe');
+      var $outerFrame = $('iframe[name="ace_outer"]');
       $('#editorcontainer, iframe, .menu_left, .menu_right').removeClass('slideshow');
 
       $outerdoc.css('overflow','auto');
-      $innerdoc.contents().last("div").css("height","20px");
+      $innerdoc.contents().last("div").css("height","20px"); // bad
       $innerdoc.removeClass('slideshow');
-      $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","0px");
-      
-      $innerdoc.css("background-color", slideShow.previousInnerCSSBackground);
+      $innerdoc.contents().find("h1").parent().prev("div").css("margin-bottom","0px"); // bad
 
-      // make font normal
-      $innerdoc.css({"font-size":"12px", "line-height":"16px"});
+      $innerdoc.css(slideShow.previousInnerCSS);
+      $innerFrame.css(slideShow.previousInnerFrameCSS);
+
+      $outerFrame.css(slideShow.previousInnerFrameCSS);
+      $outerFrame.css(slideShow.previousOuterFrameCSS);
 
       pad.changeViewOption('showLineNumbers', changeViewOption.showLineNumbers);
 
@@ -326,3 +334,31 @@ var postAceInit = function(hook, context){
   pad.plugins.ep_slideshow = slideShow;
 };
 exports.postAceInit = postAceInit;
+
+(function($){
+    $.fn.getStyleObject = function(){
+        var dom = this.get(0);
+        var style;
+        var returns = {};
+        if(window.getComputedStyle){
+            var camelize = function(a,b){
+                return b.toUpperCase();
+            };
+            style = window.getComputedStyle(dom, null);
+            for(var i = 0, l = style.length; i < l; i++){
+                var prop = style[i];
+                var camel = prop.replace(/\-([a-z])/g, camelize);
+                var val = style.getPropertyValue(prop);
+                returns[camel] = val;
+            };
+            return returns;
+        };
+        if(style = dom.currentStyle){
+            for(var prop in style){
+                returns[prop] = style[prop];
+            };
+            return returns;
+        };
+        return this.css();
+    }
+})(jQuery);
