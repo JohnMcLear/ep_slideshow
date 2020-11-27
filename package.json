@@ -20,7 +20,7 @@
     "url": "git://github.com/johnmclear/ep_slideshow.git"
   },
   "peerDependencies": {
-    "ep_headings2": ">=0.0.8"
+    "ep_etherpad-lite": ">=1.8.6"
   },
   "engines": {
     "node": "*"
